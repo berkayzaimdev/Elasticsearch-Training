@@ -614,7 +614,7 @@ GET kibana_sample_data_ecommerce/_search
 GET kibana_sample_data_ecommerce/_search
 {
   "query": {
-    "prefix": {
+    "wildcard": {
       "customer_first_name.keyword": "yous*"
     }
   }
@@ -623,7 +623,7 @@ GET kibana_sample_data_ecommerce/_search
 GET kibana_sample_data_ecommerce/_search
 {
   "query": {
-    "prefix": {
+    "wildcard": {
       "customer_first_name.keyword": "*sef"
     }
   }
@@ -632,7 +632,7 @@ GET kibana_sample_data_ecommerce/_search
 GET kibana_sample_data_ecommerce/_search
 {
   "query": {
-    "prefix": {
+    "wildcard": {
       "customer_first_name.keyword": "yous?ef"
     }
   }
@@ -762,6 +762,189 @@ GET kibana_sample_data_ecommerce/_search
   "query": {
     "match_phrase_prefix": {
       "customer_full_name": "Abdulraheem Al Shaw"
+    }
+  }
+}
+```
+
+---
+
+## Compound Queries
+
+- must = Kısıt mutlaka var olmalı. Bu kısıtlar skora etki eder
+- filter = Kısıt mutlaka var olmalı. Bu kısıtlar skora etki **etmez**
+- should = Kısıt var olabilir, OR davranışı gibi
+- must_not = Kısıt mutlaka var olmamalı
+
+---
+
+## Aggregation Types
+
+### Bucket Aggregations
+
+#### Terms
+```
+GET kibana_sample_data_ecommerce/_search
+{
+  "_source": false, 
+  "aggs": {
+    "category_names": {
+      "terms": {
+        "field": "geoip.continent_name"
+      }
+    }
+  }
+}
+
+=>
+
+{
+  "took": 4,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 4675,
+      "relation": "eq"
+    },
+    "max_score": 1,
+    "hits": [
+	...
+    ]
+  },
+  "aggregations": {
+    "category_names": {
+      "doc_count_error_upper_bound": 0,
+      "sum_other_doc_count": 0,
+      "buckets": [
+        {
+          "key": "Asia",
+          "doc_count": 1220
+        },
+        {
+          "key": "North America",
+          "doc_count": 1206
+        },
+        {
+          "key": "Europe",
+          "doc_count": 1172
+        },
+        {
+          "key": "Africa",
+          "doc_count": 899
+        },
+        {
+          "key": "South America",
+          "doc_count": 178
+        }
+      ]
+    }
+  }
+}
+```
+
+#### Ranges
+```
+GET kibana_sample_data_ecommerce/_search
+{
+  "aggs": {
+    "category_price_range": {
+      "range": {
+        "field": "taxful_total_price",
+        "ranges": [
+          {"to": 10.00},
+          {"from": 10.00, "to": 100.00},
+          {"from": 100}
+        ]
+      }
+    }
+  }
+}
+
+=>
+
+{
+  "took": 1,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 4675,
+      "relation": "eq"
+    },
+    "max_score": 1,
+    "hits": [
+      ...
+    ]
+  },
+  "aggregations": {
+    "category_price_range": {
+      "buckets": [
+        {
+          "key": "*-10.0",
+          "to": 10,
+          "doc_count": 3
+        },
+        {
+          "key": "10.0-100.0",
+          "from": 10,
+          "to": 100,
+          "doc_count": 3666
+        },
+        {
+          "key": "100.0-*",
+          "from": 100,
+          "doc_count": 1006
+        }
+      ]
+    }
+  }
+}
+```
+
+### Metric Aggregations
+
+#### Avg
+
+```
+GET kibana_sample_data_ecommerce/_search
+{
+  "_source": false, 
+  "aggs": {
+    "avg_price": {
+      "avg": {
+        "field": "taxful_total_price"
+      }
+    }
+  }
+}
+
+=>
+
+toplam ortalamayı getirir (AVG, GROUP BY mantığı)
+```
+
+#### Sum/Max/Min
+
+```
+GET kibana_sample_data_ecommerce/_search
+{
+  "_source": false, 
+  "aggs": {
+    "avg_price": {
+      "sum/max/min": {
+        "field": "taxful_total_price"
+      }
     }
   }
 }
