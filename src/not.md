@@ -675,3 +675,94 @@ GET kibana_sample_data_ecommerce/_search
   ]
 }
 ```
+
+---
+
+## Full-Text Queries
+
+### Match
+- Tokenized olarak en az bir eşleşme sağlanan kayıtları getir.
+```
+GET kibana_sample_data_ecommerce/_search
+{
+  "query": {
+    "match": {
+      "customer_full_name": "Yahya Goodwin" (tokenized olarak en az bir eşleşme sağlanan kayıtları getir)
+    }
+  }
+}
+```
+
+- AND kullanılırsa tokenized olarak tam eşleşme sağlanan kayıtları getirir.
+- Sıralamaya bakmaz! sadece o kelimeler var mı ona bakar
+```
+GET kibana_sample_data_ecommerce/_search
+{
+  "query": {
+    "match": {
+      "customer_full_name":{ 
+        "query": "Yahya Goodwin", 
+        "operator": "and"
+      }
+    }
+  }
+}
+```
+
+### Multi-Match
+- Seçili field'lar için, hepsinde arama yapar
+```
+GET kibana_sample_data_ecommerce/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "Robert Banks",
+      "fields": ["customer_first_name", "customer_last_name", "customer_full_name"]
+	  
+    }
+  }
+}
+```
+
+### Match Bool Prefix
+- Abdulraheem or Al or Shaw..
+```
+GET kibana_sample_data_ecommerce/_search
+{
+  "query": {
+    "match_bool_prefix": {
+      "customer_full_name": "Abdulraheem Al Shaw"
+    }
+  }
+}
+```
+
+### Match Phrase
+- Ancak ve ancak kelimelerin sırası öbek halinde uygunsa getirir
+```
+GET kibana_sample_data_ecommerce/_search
+{
+  "query": {
+    "match_phrase": {
+      "customer_full_name": "Abdulraheem Al Shaw"
+    }
+  }
+}
+```
+
+### Match Phrase Prefix
+- "Ahmet Mehmet Yıl" ifadesini aratıyorsak şu ifadeleri getirir;
+	- Ahmet Mehmet Yılmaz
+	- Ahmet Mehmet Yıl
+	- Ömer Ahmet Mehmet Yıldız
+
+```
+GET kibana_sample_data_ecommerce/_search
+{
+  "query": {
+    "match_phrase_prefix": {
+      "customer_full_name": "Abdulraheem Al Shaw"
+    }
+  }
+}
+```
