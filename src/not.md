@@ -320,3 +320,33 @@ PUT products/_doc/20?{refreshType}
 	}
 }
 ```
+
+---
+
+## Data Types
+
+- Common Types
+	- text: string messages	
+	- boolean: true/false
+	- date: ISO 8601 => yyyy-MM-dd
+	- numeric: byte/short/integer/long + float/double + half_float/half_double
+	- binary	
+	- keyword: structured text, must not be broken down or analyzed => email, phone, SGK no
+
+- Complex and Relational Types
+	- object: JSON object
+	- nested: class mantığıyla çalışan bir type'dır. user.name, user.surname diyerek field erişimi yapılabilir
+	- flattened: tüm alt field'lar birer **keyword**'dür.
+	- join: parent-child mantığı işlemektedir. document'ları eşleştirerek bu bağlantıyı kurarız
+	
+- Structured Types
+	- geo_shape
+	- geo_point
+	- ip
+	- date_range: 05/05/2001-07/07/2022	
+	- ip_range
+	 
+---
+
+## Mapping
+
