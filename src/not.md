@@ -941,7 +941,7 @@ GET kibana_sample_data_ecommerce/_search
 {
   "_source": false, 
   "aggs": {
-    "avg_price": {
+    "selected_price": {
       "sum/max/min": {
         "field": "taxful_total_price"
       }
