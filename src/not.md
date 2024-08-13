@@ -135,4 +135,24 @@ PUT products/_doc/20?({refresh=false, refresh=true, wait_for} seçilebilir. wait
 }
 ```
 
+### Updating Document
+
+- [POST]: <index_name>/_update/id isteği ile doküman güncelleme işlemi yapabiliriz. Seçili ID'de bir data yok ise hata fırlatır.
+```
+POST products/_update/1
+{
+	"doc": {
+		"name": "Samsung X",
+		"rating": 100,
+		"published": true,
+		"category": "mobile phone"
+	}
+}
+
+=> 
+
+{
+	"acknowledged": true
+}
+```
 
