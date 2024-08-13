@@ -52,6 +52,8 @@ PUT products/_doc/1
 }
 ```
 
+
+
 ### Retrieving Document
 
 - **GET** isteği ile ilgili index'i ve ID'yi seçerek hedef document'ı getirebiliriz.
@@ -92,6 +94,8 @@ GET products/_doc/1
 }
 ```
 
+
+
 ### Retrieving Documents with HEAD method
 
 - Eğer seçtiğimiz ID'de bir document bulunuyorsa, sadece var olup olmama bilgisinin incelenmesi adına bu metot tipinden faydalanabiliyoruz. Bu sayede response'da döndürülen fazla bilgilerden kurtuluyoruz.
@@ -111,6 +115,93 @@ ya da
 	"message": "404 - Not Found",
 }
 ```
+
+
+
+### Retrieving Multiple Documents
+
+- query field'ı yardımıyla getirme
+
+```
+GET products/_search
+{
+	"query": {"match_all": {}}
+}
+
+=>
+
+{
+	"took": 1,
+	"timed_out": false,
+	"_shards": {
+		"total": 1,
+		"successful": 1,
+		"skipped": 0,
+		"failed": 0
+	},
+	"hits": {
+		"total": {
+			"value": 5,
+			"relation": "eq"
+		},
+		"max_score": 1,
+		"hits": [
+			{...},
+			{...},
+			{...},
+			{...},
+			{...} (documents with score field)
+		]
+	}
+}
+```
+
+- Eşleşen ID ile getirme
+
+```
+GET products/_mget
+{
+	"ids": [2,3]
+}
+
+=>
+
+{
+	"docs": [
+		{...},
+		{...} (documents)
+	]
+}
+```
+
+- Eşleşen index ve ID ile getirme
+
+```
+GET products/_mget
+{
+	"docs": [
+		{
+			"_index": "products",
+			"_id": 2,
+		},
+		{
+			"_index": "products",
+			"_id": 3,
+		}
+	]
+}
+
+=>
+
+{
+	"docs": [
+		{...},
+		{...} (documents)
+	]
+}
+```
+
+
 
 ### Updating Document
 
@@ -144,6 +235,8 @@ POST products/_update/1
 }
 ```
 
+
+
 ### Deleting Document
 
 - [POST]: <index_name>/_doc//id isteği ile doküman silme işlemi yapabiliriz. Seçili ID'de bir data yok ise 404 döndürür. result: not_found olur.
@@ -168,6 +261,8 @@ DELETE products/_doc/5
 }
 ```
 
+
+
 ### Retrieving Shards
 
 - **GET** isteği ile hedef index'e ait shard bilgilerine erişebiliriz.
@@ -183,11 +278,15 @@ products 0 r UNASSIGNED
 
 - Response'u değerlendirecek olursak, iki satır döndürdü. İlk satır primary, ikinci satır ise replica shard'a işaret eder
 
+
+
 ### Identifiers
 
 - **PUT** isteği ile index ekleyebileceğimizi biliyoruz. Eğer seçtiğimiz ID varolan bir indexi işaret ediyorsa ve biz böyle bir denk gelme durumunda uyarı versin istiyorsak, ```[PUT]: products/_create/1``` kullanabiliriz. Yaptığımız tek farklılık ```_doc``` yerine ```_create``` kullandık.
 - Eğer ID otomatik verilsin istiyorsak, **POST** isteğinde bulunabiliriz; ```[POST]: products/_doc```
 - Best Practice için ID'yi client olarak kendimiz vermemiz önemlidir.
+
+
 
 ### Indexing
 
@@ -207,8 +306,9 @@ PUT products/_settings
 
 
 - *refresh* özelliği ise default olarak false olup, PUT isteklerinde true olarak ya da wait_for olarak ayarlanabilir.
+- refresh=false, refresh=true, wait_for} seçilebilir. wait_for seçilirse, settings'te belirlemiş olduğumuz süre sonrasında sorgulama yapılabilir. refresh true ise, anında sorgulama yapılabilir.
 ```
-PUT products/_doc/20?({refresh=false, refresh=true, wait_for} seçilebilir. wait_for seçilirse, settings'te belirlemiş olduğumuz süre sonrasında sorgulama yapılabilir. refresh true ise, anında sorgulama yapılabilir.)
+PUT products/_doc/20?{refreshType}
 {
 	"name": "iPhone 6",
 	"rating": 100,
