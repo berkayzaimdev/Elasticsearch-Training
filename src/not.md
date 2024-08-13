@@ -466,4 +466,66 @@ POST /_reindex
     "index": "newProducts"
   }
 }
+```	 
+
+---
+
+## Searching
+
+### Çalışma Mekanizması
+
+1. Seçtiğimiz shard sayısına göre tüm index, ayrı ayrı **Node**'lara alınır. Biri koordinatör olmak üzere, shard sayısı kadar ayrılırlar ve her **Node**, bir shard tutar. (Koordinatör zaman içerisinde değişebilir)
+1. Arama isteği geldiği zaman koordinatör Node, geri kalan tüm Node'lara **eşzamanlı olarak** istek gönderir. Bu istek, aynı index'e gönderilir yani alakasız bir index'e değil. Koordinatör, nereye istek göndereceğini bilen bir yapıdır.
+1. İstek sonucu, response olarak döner.
+
+### Rest API
+
+- _search endpoint'ine istek göndererek arama yapabiliriz.
+- GET/POST olarak isteğimizi gönderebiliriz. Arama kriterlerini query-string olarak yahut request body olarak betimleyebiliriz.
+
+```
+GET kibana_sample_data_ecommerce/_search?q=user:berkay
+
+GET kibana_sample_data_ecommerce/_search
+{
+  "query": {
+    "match": {
+      "user": "berkay"
+    }
+  }
+}
+```
+
+### Search Context
+
+- Query Context => skor değeri elde ettiğimiz arama yöntemi. örneğin: text arama
+- Filter Context => skor hesaplaması yapılmaz. elasticsearch'tan gelen datanın ne kadar ilişkili olduğu ile ilgili bir derdimiz yok ise bu yöntemi kullanıp, ayrıca **caching** de uygulayabiliriz. örneğin: datetime arama
+
+### Search Response
+
+```
+{
+	"took": 1, (execution time - milisecond)
+	"timed_out": false,
+	"_shards": {
+		"total": 1,
+		"successful": 1,
+		"skipped": 0,
+		"failed": 0
+	},
+	"hits": {
+		"total": {
+			"value": 5, (toplam result)
+			"relation": "eq"
+		},
+		"max_score": 1, (en yüksek skor)
+		"hits": [
+			{...},
+			{...},
+			{...},
+			{...},
+			{...} (skora göre sıralanır)
+		]
+	}
+}
 ```
