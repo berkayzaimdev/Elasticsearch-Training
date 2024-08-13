@@ -102,3 +102,37 @@ products 0 r UNASSIGNED
 - **PUT** isteği ile index ekleyebileceğimizi biliyoruz. Eğer seçtiğimiz ID varolan bir indexi işaret ediyorsa ve biz böyle bir denk gelme durumunda uyarı versin istiyorsak, ```[PUT]: products/_create/1``` kullanabiliriz. Yaptığımız tek farklılık ```_doc``` yerine ```_create``` kullandık.
 - Eğer ID otomatik verilsin istiyorsak, **POST** isteğinde bulunabiliriz; ```[POST]: products/_doc```
 - Best Practice için ID'yi client olarak kendimiz vermemiz önemlidir.
+
+### Indexing
+
+- _refresh_interval_ field'ı, bize bir data eklendikten ne kadar süre sonra sorgulanabileceğini belirtir. Default olarak bu süre 1 saniyedir. Örneğin;
+```
+PUT products/_settings
+{
+	"index": {"refresh_interval_": "5s"}
+}
+
+=> 
+
+{
+	"acknowledged": true
+}
+```
+
+
+- *refresh* özelliği ise default olarak false olup, PUT isteklerinde true olarak ya da wait_for olarak ayarlanabilir.
+```
+PUT products/_doc/20?({refresh=false, refresh=true, wait_for} seçilebilir. wait_for seçilirse, settings'te belirlemiş olduğumuz süre sonrasında sorgulama yapılabilir. refresh true ise, anında sorgulama yapılabilir.)
+{
+	"name": "iPhone 6",
+	"rating": 100,
+	"published": true,
+	"category": "mobile phone"
+	"price": {
+	   "usd": 3000,
+	   "eur": 2500
+	}
+}
+```
+
+
