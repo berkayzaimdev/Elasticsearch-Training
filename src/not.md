@@ -82,6 +82,16 @@ GET products/_doc/1
 }
 ```
 
+- Seçili ID'de bir document yoksa, 404 döndürür.
+
+```
+{
+	"_index": "products",
+	"_id": "1",
+	"found": false
+}
+```
+
 ### Retrieving Shards
 
 - **GET** isteği ile hedef index'e ait shard bilgilerine erişebiliriz.
@@ -156,3 +166,26 @@ POST products/_update/1
 }
 ```
 
+### Deleting Document
+
+- [POST]: <index_name>/_doc//id isteği ile doküman silme işlemi yapabiliriz. Seçili ID'de bir data yok ise 404 döndürür. result: not_found olur.
+```
+DELETE products/_doc/5
+
+=> 
+
+{
+	"_index": "products",
+	"_type_": "_doc",
+	"_id": "5",
+	"_version": 22,
+	"result": "deleted",
+	"_shards": {
+	   "total": 2,
+	   "successful": 1,
+	   "failed": 0
+	},
+	"_seq_no": 37,
+	"_primary_term": 1
+}
+```
