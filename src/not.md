@@ -350,3 +350,120 @@ PUT products/_doc/20?{refreshType}
 
 ## Mapping
 
+- First Indexing
+	1. Yeni bir Index oluştur.
+	1. Yeni bir Schema oluştur.
+	1. Document'i kalıcı olarak kaydet.
+	
+	(Daha sonraki işlemlerde ilk 2 adım gerçekleşmez.)
+
+- Veri karmaşası yaratmamak adına, schema'yı bizim net olarak belirlememiz Best Practice bir davranıştır.
+
+### Dynamic Mapping
+
+```
+PUT kalemler/_doc/1
+{
+  "name": "kalem 1",
+  "price": 22.22,
+  "created_date": "2010/01/01"
+}
+
+GET kalemler/_mapping
+
+=>
+
+{
+  "kalemler": {
+    "mappings": {
+      "properties": {
+        "created_date": {
+          "type": "date",
+          "format": "yyyy/MM/dd HH:mm:ss||yyyy/MM/dd||epoch_millis"
+        },
+        "name": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword",
+              "ignore_above": 256
+            }
+          }
+        },
+        "price": {
+          "type": "float"
+        }
+      }
+    }
+  }
+}
+```
+
+### Explicit Mapping
+
+```
+PUT products
+{
+  "mappings": {
+    "properties": {
+      "name": {"type": "text"},
+      "price": {"type": "long"},
+      "stock_no": {"type": "keyword"},
+      "warehouse": {
+        "properties":{
+          "germany": {"type": "integer"},
+          "turkey": {"type": "integer"}
+        }
+      }
+    }
+  }
+}
+
+GET products/_mapping
+
+=>
+
+{
+  "products": {
+    "mappings": {
+      "properties": {
+        "name": {
+          "type": "text"
+        },
+        "price": {
+          "type": "long"
+        },
+        "stock_no": {
+          "type": "keyword"
+        },
+        "warehouse": {
+          "properties": {
+            "germany": {
+              "type": "integer"
+            },
+            "turkey": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+- Var olan field'a alt field ekleyebiliriz, lakin mapping'te bu field'ın type'ını değiştiremeyiz.
+
+- Bu senaryoyu gerçekleştirmenin tek yolu, re-index işlemidir. Bunu sağlamak için ise _reindex endpoint'ine **POST** isteği göndererek eski indeximizdeki verileri yeni index'e kopyalarız
+
+```
+POST /_reindex
+{
+  "source": {
+    "index": "products"
+  },
+  "dest": {
+    "index": "newProducts"
+  }
+}
+```
