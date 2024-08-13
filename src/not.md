@@ -529,3 +529,149 @@ GET kibana_sample_data_ecommerce/_search
 	}
 }
 ```
+
+---
+
+## Term-Level Queries
+
+### Tam Eşleşme
+```
+GET kibana_sample_data_ecommerce/_search
+{
+  "query": {
+    "term": {
+      "customer_first_name.keyword": "youssef"
+    }
+  }
+}
+```
+
+### Çoklu Eşleşme
+```
+GET kibana_sample_data_ecommerce/_search
+{
+  "query": {
+    "term": {
+      "customer_first_name.keyword": ["youssef", "jim"]
+    }
+  }
+}
+```
+
+### Prefix Eşleşme
+```
+GET kibana_sample_data_ecommerce/_search
+{
+  "query": {
+    "prefix": {
+      "customer_first_name.keyword": "yous"
+    }
+  }
+}
+```
+
+### ID'ye Göre Eşleşme
+```
+GET kibana_sample_data_ecommerce/_search
+{
+  "query": {
+    "ids": {
+      "values": ["1", "2", "3"]
+    }
+  }
+}
+```
+
+### Field'ın Olup Olmadığını Kontrol Etme
+```
+GET kibana_sample_data_ecommerce/_search
+{
+  "query": {
+    "exists": {
+      "field": "order_id"
+    }
+  }
+}
+```
+
+### Range Query
+``` 
+GET kibana_sample_data_ecommerce/_search
+{
+  "query": {
+    "range": {
+      "taxless_total_price":{
+        "gte": 50,
+        "lte": 100
+      }
+    }
+  }
+}
+```
+
+### Wildcard Query
+```
+GET kibana_sample_data_ecommerce/_search
+{
+  "query": {
+    "prefix": {
+      "customer_first_name.keyword": "yous*"
+    }
+  }
+}
+
+GET kibana_sample_data_ecommerce/_search
+{
+  "query": {
+    "prefix": {
+      "customer_first_name.keyword": "*sef"
+    }
+  }
+}
+
+GET kibana_sample_data_ecommerce/_search
+{
+  "query": {
+    "prefix": {
+      "customer_first_name.keyword": "yous?ef"
+    }
+  }
+}
+```
+
+### Pagination Query
+```
+GET kibana_sample_data_ecommerce/_search
+{
+  "size": 30, (kaç kayıt gelecek)
+  "from": 7, (kaçıncı kayıttan itibaren almaya başlayacak)
+  "query": {
+    "multi_match": {
+      "query": "Pyramidustries",
+      "fields": ["manufacturer"]
+    }
+  }
+}
+```
+
+### Sort Query
+```
+GET kibana_sample_data_ecommerce/_search
+{
+  "query": {
+    "range": {
+      "taxless_total_price":{
+        "gte": 50,
+        "lte": 100
+      }
+    }
+  },
+  "sort": [
+    {
+      "taxless_total_price": {
+        "order": "desc
+      }
+    }
+  ]
+}
+```
