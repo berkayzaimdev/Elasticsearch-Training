@@ -92,6 +92,82 @@ GET products/_doc/1
 }
 ```
 
+### Retrieving Documents with HEAD method
+
+- Eğer seçtiğimiz ID'de bir document bulunuyorsa, sadece var olup olmama bilgisinin incelenmesi adına bu metot tipinden faydalanabiliyoruz. Bu sayede response'da döndürülen fazla bilgilerden kurtuluyoruz.
+
+```
+HEAD products/_doc/1
+
+=> 
+
+200 - OK
+
+ya da
+
+{
+	"statusCode": 404,
+	"error": "Not Found",
+	"message": "404 - Not Found",
+}
+```
+
+### Updating Document
+
+- [POST]: <index_name>/_update/id isteği ile doküman güncelleme işlemi yapabiliriz. Seçili ID'de bir data yok ise hata fırlatır.
+```
+POST products/_update/1
+{
+	"doc": {
+		"name": "Samsung X",
+		"rating": 100,
+		"published": true,
+		"category": "mobile phone"
+	}
+}
+
+=>
+
+{
+	"_index": "products",
+	"_type_": "_doc",
+	"_id": "1",
+	"_version": 3,
+	"result": "updated",
+	"_shards": {
+	   "total": 2,
+	   "successful": 1,
+	   "failed": 0
+	},
+	"_seq_no": 7,
+	"_primary_term": 1
+}
+```
+
+### Deleting Document
+
+- [POST]: <index_name>/_doc//id isteği ile doküman silme işlemi yapabiliriz. Seçili ID'de bir data yok ise 404 döndürür. result: not_found olur.
+```
+DELETE products/_doc/5
+
+=> 
+
+{
+	"_index": "products",
+	"_type_": "_doc",
+	"_id": "5",
+	"_version": 22,
+	"result": "deleted",
+	"_shards": {
+	   "total": 2,
+	   "successful": 1,
+	   "failed": 0
+	},
+	"_seq_no": 37,
+	"_primary_term": 1
+}
+```
+
 ### Retrieving Shards
 
 - **GET** isteği ile hedef index'e ait shard bilgilerine erişebiliriz.
@@ -142,50 +218,5 @@ PUT products/_doc/20?({refresh=false, refresh=true, wait_for} seçilebilir. wait
 	   "usd": 3000,
 	   "eur": 2500
 	}
-}
-```
-
-### Updating Document
-
-- [POST]: <index_name>/_update/id isteği ile doküman güncelleme işlemi yapabiliriz. Seçili ID'de bir data yok ise hata fırlatır.
-```
-POST products/_update/1
-{
-	"doc": {
-		"name": "Samsung X",
-		"rating": 100,
-		"published": true,
-		"category": "mobile phone"
-	}
-}
-
-=> 
-
-{
-	"acknowledged": true
-}
-```
-
-### Deleting Document
-
-- [POST]: <index_name>/_doc//id isteği ile doküman silme işlemi yapabiliriz. Seçili ID'de bir data yok ise 404 döndürür. result: not_found olur.
-```
-DELETE products/_doc/5
-
-=> 
-
-{
-	"_index": "products",
-	"_type_": "_doc",
-	"_id": "5",
-	"_version": 22,
-	"result": "deleted",
-	"_shards": {
-	   "total": 2,
-	   "successful": 1,
-	   "failed": 0
-	},
-	"_seq_no": 37,
-	"_primary_term": 1
 }
 ```
