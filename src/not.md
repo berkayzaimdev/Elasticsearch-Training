@@ -84,7 +84,7 @@ GET products/_doc/1
 
 ### Retrieving Shards
 
-- GET isteği ile hedef index'e ait shard bilgilerine erişebiliriz.
+- **GET** isteği ile hedef index'e ait shard bilgilerine erişebiliriz.
 
 ```
 GET _cat/shards/products
@@ -96,3 +96,9 @@ products 0 r UNASSIGNED
 ```
 
 - Response'u değerlendirecek olursak, iki satır döndürdü. İlk satır primary, ikinci satır ise replica shard'a işaret eder
+
+### Identifiers
+
+- **PUT** isteği ile index ekleyebileceğimizi biliyoruz. Eğer seçtiğimiz ID varolan bir indexi işaret ediyorsa ve biz böyle bir denk gelme durumunda uyarı versin istiyorsak, ```[PUT]: products/_create/1``` kullanabiliriz. Yaptığımız tek farklılık ```_doc``` yerine ```_create``` kullandık.
+- Eğer ID otomatik verilsin istiyorsak, **POST** isteğinde bulunabiliriz; ```[POST]: products/_doc```
+- Best Practice için ID'yi client olarak kendimiz vermemiz önemlidir.
