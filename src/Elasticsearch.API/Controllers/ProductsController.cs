@@ -4,9 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Elasticsearch.API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ProductsController : ControllerBase
+    public class ProductsController : BaseController
     {
         private readonly ProductService _productService;
 
@@ -18,9 +16,7 @@ namespace Elasticsearch.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Save(ProductCreateDto request)
         {
-            var response = await _productService.SaveAsync(request);
-
-            return Ok(response);
+            return CreateActionResult(await _productService.SaveAsync(request));
         }
     }
 }

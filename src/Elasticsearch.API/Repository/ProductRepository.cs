@@ -15,7 +15,7 @@ public class ProductRepository
     public async Task<Product?> SaveAsync(Product newProduct)
     {
         newProduct.Created = DateTime.Now;
-        var response = await _client.IndexAsync(newProduct, x => x.Index("products"));
+        var response = await _client.IndexAsync(newProduct, x => x.Index("products").Id(Guid.NewGuid().ToString()));
 
         if (!response.IsValid)
         {
