@@ -1,4 +1,5 @@
 ﻿using Elasticsearch.API.Dtos;
+using Elasticsearch.API.Models;
 using Elasticsearch.API.Repository;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -64,4 +65,17 @@ public class ProductService
 
         return ResponseDto<bool>.Success(true, HttpStatusCode.NoContent);
     }
+
+    public async Task<ResponseDto<bool>> DeleteAsync(string id)
+    {
+        var isSuccess = await _productRepository.DeleteAsync(id);
+
+        if (!isSuccess)
+        {
+            return ResponseDto<bool>.Fail("Silme işlemi sırasında bir hata meydana geldi!", HttpStatusCode.InternalServerError);
+        }
+
+        return ResponseDto<bool>.Success(true, HttpStatusCode.NoContent);
+    }
 }
+
