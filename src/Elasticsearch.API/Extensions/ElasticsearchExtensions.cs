@@ -1,6 +1,5 @@
 ﻿using Elastic.Clients.Elasticsearch;
 using Elastic.Transport;
-using Elasticsearch.Net;
 
 
 namespace Elasticsearch.API.Extensions;

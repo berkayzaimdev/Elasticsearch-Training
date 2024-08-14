@@ -17,7 +17,7 @@ public class ECommerce
     public string CustomerFullName { get; set; } = default!;
 
     [JsonPropertyName("category")]
-    public string[] Category { get; set; } = default!;
+    public List<string> Category { get; set; } = default!;
 
     [JsonPropertyName("order_id")]
     public int OrderId { get; set; }

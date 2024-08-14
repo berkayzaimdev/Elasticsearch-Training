@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Elasticsearch.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/[controller]/[action]")]
 public class BaseController : ControllerBase
 {
     [NonAction]
