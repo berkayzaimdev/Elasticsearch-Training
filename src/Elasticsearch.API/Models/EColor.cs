@@ -2,5 +2,7 @@
 
 public enum EColor
 {
-
+    Blue,
+    Pink,
+    Green
 }
