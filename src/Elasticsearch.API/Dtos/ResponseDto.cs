@@ -5,7 +5,7 @@ namespace Elasticsearch.API.Dtos;
 public record ResponseDto<T>
 {
     public T? Data { get; set; }
-    public List<string> Errors { get; set; }
+    public List<string> Errors { get; set; } = [];
     public HttpStatusCode Status { get; set; }
 
     public static ResponseDto<T> Success(T data, HttpStatusCode status)
