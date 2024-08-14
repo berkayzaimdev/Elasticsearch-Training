@@ -17,13 +17,13 @@ public class ProductRepository
         newProduct.Created = DateTime.Now;
         var response = await _client.IndexAsync(newProduct, x => x.Index("products"));
 
-        if (response.IsValid)
+        if (!response.IsValid)
         {
-            newProduct.Id = response.Id;
-
-            return newProduct;
+            return null;
         }
 
-        return null;
+        newProduct.Id = response.Id;
+
+        return newProduct;
     }
 }
