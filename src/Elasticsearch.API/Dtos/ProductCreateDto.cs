@@ -1,5 +1,3 @@
-﻿using Elasticsearch.API.Models;
+﻿namespace Elasticsearch.API.Dtos;
 
-namespace Elasticsearch.API.Dtos;
-
-public record ProductCreateDto(int Width, int Height, EColor Color);
+public record ProductCreateDto(string Name, decimal Price, int Stock, ProductFeatureDto Feature);
