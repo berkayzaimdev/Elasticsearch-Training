@@ -25,7 +25,7 @@ public class ECommerce
     [JsonPropertyName("order_date")]
     public DateTime OrderDate { get; set; }
 
-    [JsonPropertyName("customer_first_name")]
+    [JsonPropertyName("products")]
     public Product[] Products { get; set; } = default!;
 }
 

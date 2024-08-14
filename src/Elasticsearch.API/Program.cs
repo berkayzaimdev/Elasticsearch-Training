@@ -1,6 +1,7 @@
 using Elasticsearch.API.Extensions;
 using Elasticsearch.API.Repository;
 using Elasticsearch.API.Services;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,13 @@ builder.Services.AddControllers();
 builder.Services.AddElastic(configuration: builder.Configuration);
 builder.Services.AddScoped<ProductRepository>();
 builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<ECommerceRepository>();
+
+builder.Host.ConfigureLogging(logging =>
+{
+    logging.ClearProviders();
+    logging.AddConsole();
+});
 
 var app = builder.Build();
 

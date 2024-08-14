@@ -16,12 +16,14 @@ public class ECommerceRepository
 
     public async Task<ImmutableList<ECommerce>> TermQuery(string customerFirstName)
     {
-        var result = await _client.SearchAsync<ECommerce>(s => s.Query(
+        var result = await _client.SearchAsync<ECommerce>(s => s.Index(indexName).Query(
             q => q.Term(
                 t => t.Field("customer_first_name.keyword"!).Value(customerFirstName)
                 )
             )
         );
+
+        foreach (var hit in result.Hits) hit.Source.Id = hit.Id;
 
         return result.Documents.ToImmutableList();
     }
