@@ -37,8 +37,19 @@ public class ProductService
             x.Name,
             x.Price,
             x.Stock,
-            new ProductFeatureDto(x.Feature!.Width, x.Feature.Height, x.Feature.Color))).ToList();
+            new ProductFeatureDto(x.Feature!.Width, x.Feature.Height, x.Feature.Color.ToString()))).ToList();
 
         return ResponseDto<List<ProductDto>>.Success(productListDto, HttpStatusCode.OK);
+    }
+
+    public async Task<ResponseDto<ProductDto>> GetByIdAsync(string id)
+    {
+        var product = await _productRepository.GetByIdAsync(id);
+
+        if (product is null) return ResponseDto<ProductDto>.Fail("Product bulunamadı!", HttpStatusCode.NotFound);
+
+        var productDto = product.CreateDto();
+
+        return ResponseDto<ProductDto>.Success(productDto, HttpStatusCode.OK);
     }
 }

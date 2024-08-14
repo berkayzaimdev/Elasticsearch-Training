@@ -38,4 +38,14 @@ public class ProductRepository
 
         return result.Documents.ToImmutableList();
     }
+
+    public async Task<Product?> GetByIdAsync(string id)
+    {
+        var response = await _client.GetAsync<Product>(id, x => x.Index(indexName));
+
+        if (!response.IsValid) return null;
+
+        response.Source.Id = response.Id;
+        return response.Source;
+    }
 }
