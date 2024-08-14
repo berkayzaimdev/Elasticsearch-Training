@@ -19,7 +19,7 @@ public class ProductService
     {
         var responeProduct = await _productRepository.SaveAsync(request.CreateProduct());
 
-        if(responeProduct is null)
+        if (responeProduct is null)
         {
             return ResponseDto<ProductDto>.Fail(new List<string> { "Bir hata meydana geldi!" },
                                                 System.Net.HttpStatusCode.InternalServerError);
@@ -51,5 +51,17 @@ public class ProductService
         var productDto = product.CreateDto();
 
         return ResponseDto<ProductDto>.Success(productDto, HttpStatusCode.OK);
+    }
+
+    public async Task<ResponseDto<bool>> UpdateAsync(ProductUpdateDto updateProduct)
+    {
+        var isSuccess = await _productRepository.UpdateAsync(updateProduct);
+
+        if(!isSuccess)
+        {
+            return ResponseDto<bool>.Fail("Güncelleme işlemi sırasında bir hata meydana geldi!", HttpStatusCode.InternalServerError);
+        }
+
+        return ResponseDto<bool>.Success(true, HttpStatusCode.NoContent);
     }
 }
