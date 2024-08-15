@@ -98,6 +98,21 @@ public class ECommerceRepository
         return result.Documents.ToImmutableList();
     }
 
+    public async Task<ImmutableList<ECommerce>> PaginationQueryAsync(int page, int pageSize)
+    {
+        var pageFrom = (page-1) * pageSize;
+
+        var result = await _client.SearchAsync<ECommerce>(s =>
+            s.Index(indexName)
+                .Size(pageSize).From(pageFrom)
+                    .Query(q => q
+                        .MatchAll(m => { })));
+
+        result = SetIds(result);
+
+        return result.Documents.ToImmutableList();
+    }
+
     private SearchResponse<ECommerce> SetIds(SearchResponse<ECommerce> result)
     {
         foreach (var hit in result.Hits) hit.Source.Id = hit.Id;

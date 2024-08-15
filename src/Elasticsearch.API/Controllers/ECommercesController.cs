@@ -46,4 +46,11 @@ public class ECommercesController : BaseController
         var values = await _eCommerceRepository.MatchAllQueryAsync();
         return Ok(values);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> PaginationQuery(int page = 1, int pageSize = 20)
+    {
+        var values = await _eCommerceRepository.PaginationQueryAsync(page, pageSize);
+        return Ok(values);
+    }
 }
