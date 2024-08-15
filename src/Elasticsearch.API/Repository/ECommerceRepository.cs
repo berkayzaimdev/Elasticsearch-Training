@@ -60,4 +60,15 @@ public class ECommerceRepository
 
         return result.Documents.ToImmutableList();
     }
+
+    public async Task<ImmutableList<ECommerce>> PrefixQuery(string customerFullName)
+    {
+        var result = await _client.SearchAsync<ECommerce>(s =>
+            s.Index(indexName)
+                .Query(q => q
+                    .Prefix(p => p
+                        .Field(c => c.CustomerFullName.Suffix("keyword")).Value(customerFullName))));
+
+        return result.Documents.ToImmutableList();
+    }
 }

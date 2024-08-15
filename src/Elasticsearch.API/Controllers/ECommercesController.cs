@@ -25,4 +25,11 @@ public class ECommercesController : BaseController
         var values = await _eCommerceRepository.TermsQuery(firstNames);
         return Ok(values);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> TermsQuery(string fullName)
+    {
+        var values = await _eCommerceRepository.PrefixQuery(fullName);
+        return Ok(values);
+    }
 }
