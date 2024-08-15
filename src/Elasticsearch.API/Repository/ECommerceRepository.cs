@@ -145,6 +145,21 @@ public class ECommerceRepository
         return result.Documents.ToImmutableList();
     }
 
+    public async Task<ImmutableList<ECommerce>> MatchQueryFullTextAsync(string categoryName)
+    {
+
+        var result = await _client.SearchAsync<ECommerce>(s =>
+            s.Index(indexName)
+                .Query(q => q
+                    .Match(m => m
+                        .Field(f => f.Category) // artık keyword üzerinden ilerleme kaydetmediğimiz için suffix eklemedik.
+                            .Query(categoryName)))); // artık tam eşleşme yerine OR bağlacı ile herhangi bir eşleşmeyi de kabul ediyor. ayrıca score değeri de tutuluyor
+
+        result = SetIds(result);
+
+        return result.Documents.ToImmutableList();
+    }
+
     private SearchResponse<ECommerce> SetIds(SearchResponse<ECommerce> result)
     {
         foreach (var hit in result.Hits) hit.Source.Id = hit.Id;
