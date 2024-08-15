@@ -190,6 +190,32 @@ public class ECommerceRepository
         return result.Documents.ToImmutableList();
     }
 
+    public async Task<ImmutableList<ECommerce>> CompoundQueryExampleOneAsync(string cityName, double taxfulTotalPrice, string categoryName, string manufacturer)
+    {
+
+        var result = await _client.SearchAsync<ECommerce>(s =>
+            s.Index(indexName)
+                .Query(q => q
+                    .Bool(b => b
+                        .Must(m => m
+                            .Term(t => t
+                                .Field("geoip.city_name").Value(cityName)))
+                        .MustNot(mn => mn
+                            .Range(r => r
+                                .NumberRange(nr => nr
+                                    .Field(f => f.TaxfulTotalPrice).Lte(taxfulTotalPrice))))
+                        .Should(s => s
+                            .Term(t => t
+                                .Field(f => f.Category.Suffix("keyword")).Value(categoryName)))
+                        .Filter(s => s
+                            .Term(t => t
+                                .Field("manufacturer.keyword").Value(manufacturer))))));
+
+        result = SetIds(result);
+
+        return result.Documents.ToImmutableList();
+    }
+
     private SearchResponse<ECommerce> SetIds(SearchResponse<ECommerce> result)
     {
         foreach (var hit in result.Hits) hit.Source.Id = hit.Id;
