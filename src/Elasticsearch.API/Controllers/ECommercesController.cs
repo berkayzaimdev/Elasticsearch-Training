@@ -74,4 +74,11 @@ public class ECommercesController : BaseController
         var values = await _eCommerceRepository.MatchQueryFullTextAsync(categoryName);
         return Ok(values);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> MatchBoolPrefixQueryFullText(string customerFullName)
+    {
+        var values = await _eCommerceRepository.MatchBoolPrefixQueryFullTextAsync(customerFullName);
+        return Ok(values);
+    }
 }
