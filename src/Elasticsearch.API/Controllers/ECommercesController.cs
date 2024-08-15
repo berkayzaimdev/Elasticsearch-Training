@@ -60,4 +60,11 @@ public class ECommercesController : BaseController
         var values = await _eCommerceRepository.WildcardQueryAsync(customerFullName);
         return Ok(values);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> FuzzyQuery(string customerFirstName)
+    {
+        var values = await _eCommerceRepository.FuzzyQueryAsync(customerFirstName);
+        return Ok(values);
+    }
 }

@@ -128,6 +128,23 @@ public class ECommerceRepository
         return result.Documents.ToImmutableList();
     }
 
+    public async Task<ImmutableList<ECommerce>> FuzzyQueryAsync(string customerFirstName)
+    {
+
+        var result = await _client.SearchAsync<ECommerce>(s =>
+            s.Index(indexName)
+                .Query(q => q
+                    .Fuzzy(fu => fu
+                        .Field(f => f.CustomerFirstName.Suffix("keyword"))
+                            .Value(customerFirstName)
+                                .Fuzziness(new Fuzziness(2))))
+                                    .Sort(sort => sort.Field(f => f.TaxfulTotalPrice,new FieldSort() { Order = SortOrder.Desc })));
+
+        result = SetIds(result);
+
+        return result.Documents.ToImmutableList();
+    }
+
     private SearchResponse<ECommerce> SetIds(SearchResponse<ECommerce> result)
     {
         foreach (var hit in result.Hits) hit.Source.Id = hit.Id;
