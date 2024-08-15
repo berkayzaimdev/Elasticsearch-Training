@@ -15,21 +15,28 @@ public class ECommercesController : BaseController
     [HttpGet]
     public async Task<IActionResult> TermQuery([FromQuery] string firstName)
     {
-        var values = await _eCommerceRepository.TermQuery(firstName);
+        var values = await _eCommerceRepository.TermQueryAsync(firstName);
         return Ok(values);
     }
 
     [HttpPost]
     public async Task<IActionResult> TermsQuery([FromBody] List<string> firstNames)
     {
-        var values = await _eCommerceRepository.TermsQuery(firstNames);
+        var values = await _eCommerceRepository.TermsQueryAsync(firstNames);
         return Ok(values);
     }
 
     [HttpGet]
-    public async Task<IActionResult> TermsQuery(string fullName)
+    public async Task<IActionResult> PrefixQuery(string fullName)
     {
-        var values = await _eCommerceRepository.PrefixQuery(fullName);
+        var values = await _eCommerceRepository.PrefixQueryAsync(fullName);
+        return Ok(values);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> RangeQuery(double fromPrice, double toPrice)
+    {
+        var values = await _eCommerceRepository.RangeQueryAsync(fromPrice, toPrice);
         return Ok(values);
     }
 }

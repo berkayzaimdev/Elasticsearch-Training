@@ -15,7 +15,7 @@ public class ECommerceRepository
         _client = client;
     }
 
-    public async Task<ImmutableList<ECommerce>> TermQuery(string customerFirstName)
+    public async Task<ImmutableList<ECommerce>> TermQueryAsync(string customerFirstName)
     {
         // 1. YOL
         //var result = await _client.SearchAsync<ECommerce>(s => s.Index(indexName).Query(
@@ -35,39 +35,52 @@ public class ECommerceRepository
         return result.Documents.ToImmutableList();
     }
 
-    public async Task<ImmutableList<ECommerce>> TermsQuery(List<string> customerFirstNames)
+    public async Task<ImmutableList<ECommerce>> TermsQueryAsync(List<string> customerFirstNames)
     {
         List<FieldValue> terms = [.. customerFirstNames];
 
-        var termsQuery = new TermsQuery()
-        {
-            Field = "customer_first_name.keyword",
-            Term = new TermsQueryField(terms.AsReadOnly())
-        };
-
         // 1.yol
-        var result = await _client.SearchAsync<ECommerce>(s => s.Index(indexName)
-        .Query(termsQuery));
+        //var termsQuery = new TermsQuery()
+        //{
+        //    Field = "customer_first_name.keyword",
+        //    Term = new TermsQueryField(terms.AsReadOnly())
+        //};
+
+
+        //var result = await _client.SearchAsync<ECommerce>(s => s.Index(indexName)
+        //.Query(termsQuery));
 
         // 2.yol
-        var result2 = await _client.SearchAsync<ECommerce>(s =>
+        var result = await _client.SearchAsync<ECommerce>(s =>
         s.Index(indexName)
         .Query(q => q
         .Terms(t => t
         .Field(c => c.CustomerFirstName.Suffix("keyword")).Term(new TermsQueryField(terms.AsReadOnly())))));
 
-        foreach (var hit in result2.Hits) hit.Source.Id = hit.Id;
+        foreach (var hit in result.Hits) hit.Source.Id = hit.Id;
 
         return result.Documents.ToImmutableList();
     }
 
-    public async Task<ImmutableList<ECommerce>> PrefixQuery(string customerFullName)
+    public async Task<ImmutableList<ECommerce>> PrefixQueryAsync(string customerFullName)
     {
         var result = await _client.SearchAsync<ECommerce>(s =>
             s.Index(indexName)
                 .Query(q => q
                     .Prefix(p => p
                         .Field(c => c.CustomerFullName.Suffix("keyword")).Value(customerFullName))));
+
+        return result.Documents.ToImmutableList();
+    }
+    public async Task<ImmutableList<ECommerce>> RangeQueryAsync(double fromPrice, double toPrice)
+    {
+        var result = await _client.SearchAsync<ECommerce>(s =>
+            s.Index(indexName)
+                .Query(q => q
+                    .Range(r => r
+                        .NumberRange(n => n
+                            .Field(x => x.TaxfulTotalPrice)
+                                .Gte(fromPrice).Lte(toPrice)))));
 
         return result.Documents.ToImmutableList();
     }
