@@ -175,6 +175,21 @@ public class ECommerceRepository
         return result.Documents.ToImmutableList();
     }
 
+    public async Task<ImmutableList<ECommerce>> MatchPhraseQueryFullTextAsync(string customerFullName)
+    {
+
+        var result = await _client.SearchAsync<ECommerce>(s =>
+            s.Index(indexName)
+                .Query(q => q
+                    .MatchPhrase(m => m
+                        .Field(f => f.CustomerFullName)
+                            .Query(customerFullName))));
+
+        result = SetIds(result);
+
+        return result.Documents.ToImmutableList();
+    }
+
     private SearchResponse<ECommerce> SetIds(SearchResponse<ECommerce> result)
     {
         foreach (var hit in result.Hits) hit.Source.Id = hit.Id;
