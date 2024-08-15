@@ -27,4 +27,9 @@ public class BlogService
 
         return response is not null;
     }
+
+    public async Task<List<Blog>> SearchAsync(string searchText)
+    {
+        return await _blogRepository.SearchAsync(searchText);
+    }
 }

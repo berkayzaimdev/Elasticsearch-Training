@@ -11,7 +11,7 @@ public class BlogController : Controller
     {
         _blogService = blogService;
     }
-   
+
     public IActionResult Save()
     {
         return View();
@@ -33,5 +33,16 @@ public class BlogController : Controller
 
         TempData["result"] = "kayıt başarılı";
         return RedirectToAction(nameof(BlogController.Save));
+    }
+
+    public IActionResult Search()
+    {
+        return View();
+    }
+
+
+    [HttpPost]
+    public async Task<IActionResult> Search(string searchText)
+    {
     }
 }
