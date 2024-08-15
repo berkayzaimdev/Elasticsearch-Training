@@ -53,4 +53,11 @@ public class ECommercesController : BaseController
         var values = await _eCommerceRepository.PaginationQueryAsync(page, pageSize);
         return Ok(values);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> WildcardQuery(string customerFullName)
+    {
+        var values = await _eCommerceRepository.WildcardQueryAsync(customerFullName);
+        return Ok(values);
+    }
 }
