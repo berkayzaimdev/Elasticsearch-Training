@@ -30,7 +30,7 @@ public class ECommerceRepository
         var result = await _client.SearchAsync<ECommerce>(s => s.Index(indexName)
         .Query(termQuery));
 
-        foreach (var hit in result.Hits) hit.Source.Id = hit.Id;
+        result = SetIds(result);
 
         return result.Documents.ToImmutableList();
     }
@@ -53,11 +53,12 @@ public class ECommerceRepository
         // 2.yol
         var result = await _client.SearchAsync<ECommerce>(s =>
         s.Index(indexName)
-        .Query(q => q
-        .Terms(t => t
-        .Field(c => c.CustomerFirstName.Suffix("keyword")).Term(new TermsQueryField(terms.AsReadOnly())))));
+            .Query(q => q
+                .Terms(t => t
+                    .Field(c => c.CustomerFirstName.Suffix("keyword"))
+                        .Term(new TermsQueryField(terms.AsReadOnly())))));
 
-        foreach (var hit in result.Hits) hit.Source.Id = hit.Id;
+        result = SetIds(result);
 
         return result.Documents.ToImmutableList();
     }
@@ -83,5 +84,24 @@ public class ECommerceRepository
                                 .Gte(fromPrice).Lte(toPrice)))));
 
         return result.Documents.ToImmutableList();
+    }
+    public async Task<ImmutableList<ECommerce>> MatchAllQueryAsync()
+    {
+        var result = await _client.SearchAsync<ECommerce>(s =>
+            s.Index(indexName)
+                .Size(100)
+                    .Query(q => q
+                        .MatchAll(m => { })));
+
+        result = SetIds(result);
+
+        return result.Documents.ToImmutableList();
+    }
+
+    private SearchResponse<ECommerce> SetIds(SearchResponse<ECommerce> result)
+    {
+        foreach (var hit in result.Hits) hit.Source.Id = hit.Id;
+
+        return result;
     }
 }

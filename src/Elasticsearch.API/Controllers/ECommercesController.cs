@@ -39,4 +39,11 @@ public class ECommercesController : BaseController
         var values = await _eCommerceRepository.RangeQueryAsync(fromPrice, toPrice);
         return Ok(values);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> MatchAllQuery()
+    {
+        var values = await _eCommerceRepository.MatchAllQueryAsync();
+        return Ok(values);
+    }
 }
