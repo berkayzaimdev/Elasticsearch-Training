@@ -1,4 +1,6 @@
 using Elasticsearch.Web.Extensions;
+using Elasticsearch.Web.Repositories;
+using Elasticsearch.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddElasticsearch(builder.Configuration);
+
+builder.Services.AddScoped<BlogRepository>();
+builder.Services.AddScoped<BlogService>();
 
 var app = builder.Build();
 
