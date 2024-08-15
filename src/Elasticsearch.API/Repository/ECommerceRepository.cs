@@ -160,6 +160,25 @@ public class ECommerceRepository
         return result.Documents.ToImmutableList();
     }
 
+    public async Task<ImmutableList<ECommerce>> MultiMatchQueryFullTextAsync(string name)
+    {
+
+        var result = await _client.SearchAsync<ECommerce>(s =>
+            s.Index(indexName)
+                .Query(q => q
+                    .MultiMatch(m => m
+                        .Fields(
+                                 new Field("customer_first_name")
+                            .And(new Field("customer_last_name"))
+                            .And(new Field("customer_full_name"))
+                        ) 
+                        .Query(name))));
+
+        result = SetIds(result);
+
+        return result.Documents.ToImmutableList();
+    }
+
     public async Task<ImmutableList<ECommerce>> MatchBoolPrefixQueryFullTextAsync(string customerFullName)
     {
 
